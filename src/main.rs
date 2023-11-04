@@ -1,7 +1,4 @@
 use regex::Regex;
-use serde;
-use serde_json;
-
 use serde::Serialize;
 
 #[derive(Serialize)]
@@ -37,22 +34,26 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         let contracts = document.select(&contract_selector);
         let tickers = document.select(&ticker_selector);
 
-        names.for_each(|e| a.push(format!("{}", e.text().next().unwrap())));
+        names.for_each(|e| a.push(e.text().next().unwrap().to_string()));
         tickers.for_each(|e| {
-            b.push(format!(
-                "{}",
+            b.push(
                 re.captures(e.text().next().unwrap())
                     .unwrap()
                     .get(1)
                     .unwrap()
                     .as_str()
-            ))
+                    .to_string(),
+            )
         });
         contracts.for_each(|e| {
-            c.push(format!(
-                "{}",
-                e.attr("href").unwrap().split('/').last().unwrap()
-            ))
+            c.push(
+                e.attr("href")
+                    .unwrap()
+                    .split('/')
+                    .last()
+                    .unwrap()
+                    .to_string(),
+            )
         });
     }
 
